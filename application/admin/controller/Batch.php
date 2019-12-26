@@ -81,6 +81,7 @@ class Batch extends \think\Controller
             }
            //dump($excel_array);exit; //打印表格的所有数据
             $datas = [];
+            $i = 1;
             foreach ($excel_array as $k => $v) {
                 $type = Db::table('landing_type')->where('type_name','like',"%".$v[2]."%")->find();
               //  dump($type);
@@ -128,7 +129,8 @@ class Batch extends \think\Controller
                     $data[$k]['type_name'] = $type['type_name'];
                 }
 
-                
+                    $data[$k]['id'] = $i;
+                    $i++;
                 
             }
             $json_data = json_encode($data);

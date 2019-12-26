@@ -234,7 +234,9 @@ class Ajax extends \think\Controller
           $curl = new Curl();
           
           $up_data = [];
+          $i = 0;
            foreach($data['data'] as $k=>$v){
+              $num = $v['id'];
               $up_data['advertiser_id'] = (int)$advertiser_id;
               $up_data['campaign_name'] = $v['campaign_name'];
               $up_data['budget_mode'] = $v['budget_mode'];
@@ -247,12 +249,20 @@ class Ajax extends \think\Controller
               $res = $curl->post($url,$up_data,$token);
               $res_data = json_decode($res);
               if($res_data->code != 0){
-                $error[$k]['message'] = $res_data->message;
-                $error[$k]['campaign_name'] = $up_data['campaign_name'];
+                $error[$i]['id'] = $num;
+                $error[$i]['message'] = $res_data->message;
+                if($error[$i]['message'] == '广告组不能重复'){
+                  $err = '广告组不能重复';
+                  return $err;
+                }
+                $error[$i]['campaign_name'] = $up_data['campaign_name'];
+                $i++;
                 continue;
               }
               //dump($res_data);exit;
            }
+           //dump($error);exit;
+          // $error['num'] = count($error);
           return $error;
            
        }
